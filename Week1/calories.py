@@ -43,7 +43,7 @@ class Calculator:
 
     def handle_entry(self, cals, entry):
         ending = entry[-1]
-        val = int(entry[:-1])
+        val = to_int(entry)
 
         if ending == 'g':
             self.meal_cals += val * cals
@@ -68,7 +68,7 @@ class Calculator:
         # total = self.meal_cals / (1 - self.unknown / 100)
 
         fat_ending = self.fat_val[-1]
-        fv = int(self.fat_val[:-1])
+        fv = to_int(self.fat_val)
 
         if fat_ending == 'g':
             fat_cal = fv * self.fcal
@@ -83,6 +83,7 @@ class Calculator:
         self.unknown = 0
 
     def print_output(self):
+        # print(self.total_fat_cals, self.total_cals)
         print('{}%'.format(round((self.total_fat_cals / self.total_cals) * 100)))
 
         
@@ -101,9 +102,6 @@ if __name__ == '__main__':
         if '-' in line:
             if c.should_stop:
                 exit()
-            if c.total_cals == 0:
-                print('0%')
-                continue
             c.print_output()
             c.reset()
             c.should_stop = True
