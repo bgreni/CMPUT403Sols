@@ -65,29 +65,33 @@ class Calculator:
     def fat_for_meal(self):
         known = 100 - self.unknown
         total = self.meal_cals + get_remaining(known, self.meal_cals, self.unknown)
+        # total = self.meal_cals / (1 - self.unknown / 100)
 
         fat_ending = self.fat_val[-1]
         fv = int(self.fat_val[:-1])
+
         if fat_ending == 'g':
             fat_cal = fv * self.fcal
         elif fat_ending == 'C':
             fat_cal = fv
         else:
             fat_cal = total * (fv / 100)
-        
+            
         self.total_fat_cals += fat_cal
         self.total_cals += total
         self.meal_cals = 0
+        self.unknown = 0
 
     def print_output(self):
         print('{}%'.format(round((self.total_fat_cals / self.total_cals) * 100)))
-    
+
+        
     def reset(self):
-        self.meal_cals = 0
         self.total_cals = 0
         self.total_fat_cals = 0
         self.unknown = 0
         self.fat_val = ''
+        self.meal_cals = 0
                
 
 if __name__ == '__main__':
@@ -97,6 +101,9 @@ if __name__ == '__main__':
         if '-' in line:
             if c.should_stop:
                 exit()
+            if c.total_cals == 0:
+                print('0%')
+                continue
             c.print_output()
             c.reset()
             c.should_stop = True
