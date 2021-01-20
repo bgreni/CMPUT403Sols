@@ -21,10 +21,26 @@ import sys
   By submitting this code, you are agreeing that you have solved in accordance
   with the collaboration policy in CMPUT 403.
 """
+from heapq import heappop, heappush
+
 
 if __name__ == '__main__':
     researchers, inactive_mins = sys.stdin.readline().split()
-    ranges = []
+    inactive_mins = int(inactive_mins)
+    arrivals = []
+    finished = []
+    count = 0
     
     for i in range(int(researchers)):
-        range = sys.stdin.readline().spli
+        arrived, stayed = sys.stdin.readline().split()
+        heappush(arrivals, int(arrived))
+        heappush(finished, int(arrived) + int(stayed))
+    
+    while arrivals:
+        arrival = heappop(arrivals)
+        while arrival - finished[0] > inactive_mins:
+            heappop(finished)
+        if finished[0] <= arrival:
+            heappop(finished)
+            count += 1
+    print(count)

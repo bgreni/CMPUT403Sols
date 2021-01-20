@@ -32,14 +32,10 @@ struct Pair {
     int end;
 };
 
-bool helper(Pair &p1, Pair &p2) {
-    if (p1.arrived > p2.end && )
-}
-
 int main() {
     int researchers, inactive_mins;
     cin >> researchers >> inactive_mins;
-    auto left = vector<Pair>();
+    vector<Pair> left = vector<Pair>();
     left.reserve(researchers);
     int arrives, stays;
     int count = 0;
@@ -48,14 +44,17 @@ int main() {
         Pair newPair = {
             arrives,
             arrives + stays
-        }
+        };
 
-        for (auto p : left) {
-            if (abs(l - leaves) <=  inactive_mins) {
+        for (int i = 0; i < left.size(); ++i) {
+            cout << left[i].arrived << " " << left[i].end << " " << newPair.arrived << " " << newPair.end << endl << endl;
+            if (helper(left[i], newPair, inactive_mins)) {
                 ++count;
+                left.push_back(newPair);
                 break;
             }
         }
+        left.push_back(newPair);
     }
     cout << count << endl;
 }
