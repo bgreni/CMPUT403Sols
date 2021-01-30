@@ -1,5 +1,6 @@
 import sys
 import itertools
+from heapq import heappush
 """
   Brian Grenier
   1545276
@@ -36,7 +37,10 @@ if __name__ == '__main__':
     lines.reverse()
     while lines:
         c_size = int(lines.pop())
-        c = [lines.pop().strip('\n') for i in range(c_size)]
+        # c = [lines.pop().strip('\n') for i in range(c_size)]
+        c = []
+        for i in range(c_size):
+
         p_size = int(lines.pop())
         pairs = [lines.pop().split() for i in range(p_size)]
 
