@@ -39,7 +39,7 @@ void show(vector<string> s) {
 bool is_valid(vector<string> v, vector<pair<string, string>> p) {
     for (int i = 0; i < v.size() - 1; ++i) {
         for (auto b : p) {
-            if (v[i] == b.first && v[i+1] == b.second || v[i] == b.second && v[i+1] == b.first) 
+            if ((v[i] == b.first && v[i+1] == b.second) || (v[i] == b.second && v[i+1] == b.first)) 
                 return false;
         }
     }
@@ -47,8 +47,8 @@ bool is_valid(vector<string> v, vector<pair<string, string>> p) {
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
+    // ios::sync_with_stdio(false);
+    // cin.tie(NULL);
     int class_size, pair_len;
     while (!cin.eof()) {
         cin >> class_size;
@@ -63,7 +63,7 @@ int main() {
         vector<pair<string, string>> p;;
         for (int i = 0; i < pair_len; ++i) {
             cin >> p1 >> p2;
-            p.push_back(pair<string, string>(p1, p2));
+            p.push_back(make_pair(p1, p2));
         }
         bool done = false;
         sort(c.begin(), c.end());

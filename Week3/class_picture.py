@@ -40,13 +40,9 @@ if __name__ == '__main__':
         p_size = int(lines.pop())
         pairs = [lines.pop().split() for i in range(p_size)]
 
-        # print(c)
-        # print(pairs, end='\n\n')
-        valids = []
         done = False
         c.sort()
         for perm in itertools.permutations(c):
-          # perm = list(perm)
           if is_valid(perm, pairs):
             print(' '.join(perm))
             done = True
