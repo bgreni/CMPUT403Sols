@@ -2,7 +2,6 @@ import sys
 from pprint import pprint
 from copy import deepcopy, copy
 import itertools
-from heapq import heappush, heapify
 """
   Brian Grenier
   1545276
@@ -27,21 +26,47 @@ from heapq import heappush, heapify
 """
 bad = ''
 pieces = []
+import random
+X = 10
+O = 9
+DOT = 8
+
+zobTable = []
+def conv(piece):
+    if piece == 'X':
+        return X
+    elif piece == 'O':
+        return O
+    elif piece == '.':
+        return DOT
+    else:
+        return int(piece)
+
+# def computeHash(board):
+#     h = 0
+#     l = len(board)
+#     for i in range(l):
+#         for j in range(l):
+#            # print board[i][j]
+#             if board[i][j] != '-':
+#                 piece = indexing(board[i][j])
+#                 h ^= zobTable[i][j][piece]
 
 def row_ways(row, piece, board, inds):
     end = 0
     start = 0
     b = []
-    bd = bad.replace(indss[inds[0]], '')
+    # print(inds)
+    bd = [O, DOT,inds[0]]
     while end < len(board[row]):
-        if board[row][end] not in bd:
+        if board[row][end] in bd:
             if end - start != piece-1:
                 end += 1
             else:
-                if not any([True for x in board[row][start : end+1] if x in bd]):
+                if not any([True for x in range(start, end+1) if board[row][x] not in bd]):
                     temp = deepcopy(board)
                     for i in range(start, end+1):
-                        temp[row][i] = indss[inds[0]]
+                        temp[row][i] = inds[0]
                     start += 1
                     end += 1
                     # print(temp)
@@ -59,16 +84,16 @@ def col_ways(col, piece, board, inds):
     end = 0
     start = 0
     b = []
-    bd = bad.replace(indss[inds[0]], '')
+    bd = [O, DOT,inds[0]]
     while end < len(board[col]):
-        if board[end][col] not in bd:
+        if board[end][col] in bd:
             if end - start != piece-1:
                 end += 1
             else:
-                if not any([True for x in range(start, end+1) if board[x][col] in bd]):
+                if not any([True for x in range(start, end+1) if board[x][col] not in bd]):
                     temp = deepcopy(board)
                     for i in range(start, end+1):
-                        temp[i][col] = indss[inds[0]]
+                        temp[i][col] = inds[0]
                     start += 1
                     end += 1
                     b.append(temp)
@@ -85,18 +110,7 @@ def valid(board, tot):
     t = 0
     for row in range(len(board)):
         for col in range(len(board[row])):
-            if board[row][col] in good:
-                t += 1
-    # print(t, tot)
-    # pprint(board)
-    # print()
-    return t == tot
-
-def isv(board, tot):
-    t = 0
-    for row in range(len(board)):
-        for col in range(len(board[row])):
-            if board[row][col] in gd:
+            if board[row][col] in inds + [O]:
                 t += 1
     # print(t, tot)
     # pprint(board)
@@ -131,24 +145,25 @@ def ways_to_place(boards, inds, num_pieces):
     bs = list(x for x, _ in itertools.groupby(bs))
 
     return ways_to_place(bs, inds[1:], num_pieces)
+ 
+def convert(board):
+    for row in range(len(board)):
+        for col in range(len(board)):
+            board[row][col] = conv(board[row][col])
+
+    return board
 
 
-# def X_in_board(board):
-#     for row in board:
-#         if 'X' in row:
-#             return True
-#     return False
-
-indss = []
+ind = []
 if __name__ == '__main__':
     n, k = map(int, sys.stdin.readline().split())
     board = [list(sys.stdin.readline().strip('\n')) for i in range(n)]
+    board = convert(board)
     pieces = [int(sys.stdin.readline()) for i in range(k)]
     inds = [i for i in range(len(pieces))]
-    indss = [str(s) for s in inds]
-    bad = 'X{}'.format(''.join(indss))
-    good = 'O' + bad.replace('X', '')
-    gd = bad.replace('X', '')
+    ind = inds.copy()
+
+    # zobTable = [[[random.randint(1,2**64 - 1) for i in range(12)]for j in range(8)]for k in range(8)]
 
 
     print(ways_to_place([board], inds, 0))
