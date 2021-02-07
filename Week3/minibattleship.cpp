@@ -28,10 +28,38 @@ using namespace std;
 vector<char> bad = {'.', 'X'};
 vector<vector<bool>> board;
 int n, k;
+vector<int> pieces;
 
-int ways(vector<int> pieces) {
+int ways(int index, vector<vector<bool>> b) {
+    if (index == pieces.size()) {
+        // check valid
+        return 1;
+    }
 
-    for (auto p)
+    int piece = pieces[index];
+
+
+    for (auto e : b) {
+        int i = 0;
+        int j = 0;
+        while (j < e.size()) {
+            if (e[j] == true) {
+                if (j - i != piece - 1) {
+                    ++j;
+                } else {
+                    bool valid = true;
+                    for (int k = i; k < j; ++k) {
+                        if (e[k] == false) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    
 }
 
 int main() {
@@ -54,12 +82,12 @@ int main() {
         }
     }
 
-    vector<int> pieces = vector<int>(k);
+    pieces = vector<int>(k);
     for (int i = 0; i < k; ++i) {
         cin >> pieces[i];
     }
 
     sort(pieces.begin(), pieces.end(), greater<int>());
 
-    cout << ways(pieces) << endl;
+    cout << ways(0, board) << endl;
 }
