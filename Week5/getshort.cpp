@@ -67,7 +67,7 @@ int main() {
 
             for (auto nei : g[pos]) {
                 q.push({nei.first * w, nei.second});
-            }
+            } 
 
         }
 
