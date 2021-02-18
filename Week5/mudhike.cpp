@@ -1,5 +1,6 @@
-import sys
-"""
+#include <bits/stdc++.h>
+using namespace std;
+/*
   Brian Grenier
   1545276
   bgrenier
@@ -20,9 +21,16 @@ import sys
 
   By submitting this code, you are agreeing that you have solved in accordance
   with the collaboration policy in CMPUT 403.
-"""
+*/
 
-if __name__ == '__main__':
-    nums = list(map(in, sys.stdin.readlines()[1]))
+typedef pair<double, double> p;
+
+int main() {
+    int r, c;
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    cin >> r >> c;
 
     
+}

@@ -1,0 +1,1 @@
+g++ -std=c++17 getshort.cpp && time ./a.out < getshorty.in > out.put && diff out.put getshorty.ans
