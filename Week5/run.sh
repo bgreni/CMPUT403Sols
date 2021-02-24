@@ -1,1 +1,4 @@
-g++ -std=c++17 getshort.cpp && time ./a.out < getshorty.in > out.put && diff out.put getshorty.ans
+g++ -std=c++17 mudhike.cpp && \
+time ./a.out < 1.in > out.put && diff out.put 1.ans && \
+time ./a.out < 2.in > out.put && diff out.put 2.ans && \
+time ./a.out < 3.in > out.put && diff out.put 3.ans
