@@ -1,4 +1,89 @@
-#include <bits/stdc++.h>
+#ifndef _GLIBCXX_NO_ASSERT
+#include <cassert>
+#endif
+#include <cctype>
+#include <cerrno>
+#include <cfloat>
+#include <ciso646>
+#include <climits>
+#include <clocale>
+#include <cmath>
+#include <csetjmp>
+#include <csignal>
+#include <cstdarg>
+#include <cstddef>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+
+#if __cplusplus >= 201103L
+#include <ccomplex>
+#include <cfenv>
+#include <cinttypes>
+#include <cstdbool>
+#include <cstdint>
+#include <ctgmath>
+#include <cwchar>
+#include <cwctype>
+#endif
+
+// C++
+#include <algorithm>
+#include <bitset>
+#include <complex>
+#include <deque>
+#include <exception>
+#include <fstream>
+#include <functional>
+#include <iomanip>
+#include <ios>
+#include <iosfwd>
+#include <iostream>
+#include <istream>
+#include <iterator>
+#include <limits>
+#include <list>
+#include <locale>
+#include <map>
+#include <memory>
+#include <new>
+#include <numeric>
+#include <ostream>
+#include <queue>
+#include <set>
+#include <sstream>
+#include <stack>
+#include <stdexcept>
+#include <streambuf>
+#include <string>
+#include <typeinfo>
+#include <utility>
+#include <valarray>
+#include <vector>
+
+#if __cplusplus >= 201103L
+#include <array>
+#include <atomic>
+#include <chrono>
+#include <condition_variable>
+#include <forward_list>
+#include <future>
+#include <initializer_list>
+#include <mutex>
+#include <random>
+#include <ratio>
+#include <regex>
+#include <scoped_allocator>
+#include <system_error>
+#include <thread>
+#include <tuple>
+#include <typeindex>
+#include <type_traits>
+#include <unordered_map>
+#include <unordered_set>
+#endif
+
 using namespace std;
 /*
   Brian Grenier
@@ -22,15 +107,8 @@ using namespace std;
   By submitting this code, you are agreeing that you have solved in accordance
   with the collaboration policy in CMPUT 403.
 */
-// typedef pair<int, int> pa;
-// typedef pair<pa, int> p;
 
 typedef vector<vector<int>> vec;
-
-#define UP (i - c)
-#define DOWN (i + c)
-#define LEFT (i - 1)
-#define RIGHT (i + 1)
 
 struct Loc {
     int x;
@@ -54,6 +132,9 @@ struct Node {
 	}
 };
 
+int xs[] = {0,0,1,-1};
+int ys[] = {1,-1,0,0};
+
 int main() {
     int r, c;
     ios::sync_with_stdio(false);
@@ -62,6 +143,8 @@ int main() {
     cin >> r >> c;
 
     vec g(r, vector<int>(c));
+    vec d(r, vector<int>(c, INT_MAX));
+    
 
     int val;
     for (int i = 0; i < r; ++i) {
@@ -71,18 +154,17 @@ int main() {
     }
     
     int deepest = INT32_MAX;
-    // long long total = LONG_LONG_MAX;    
-    // vec d(r, vector<int>(c, INT32_MAX));
 
     priority_queue<Node, vector<Node>, Node> q;
 
     vector<int> best;
 
-    for (int i = 0; i < c; ++i) {
+    for (int i = 0; i < r; ++i) {
         vector<vector<bool>> v(r, vector<bool>(c, false));
         vector<int> sol;
         Loc start = {0, i};
         q.push(Node(start, g[i][0]));
+        int maxel = INT_MIN;
     
         while (!q.empty()) {
             Node top = q.top();
@@ -93,44 +175,38 @@ int main() {
             q.pop();
             sol.push_back(cost);
 
-            if (x == c-1) {
-                break;
-            }
+            // maxel = max(maxel, cost);
 
-            if (v[y][x])
-                continue;
+            if (cost > d[y][x])
+			    continue;
+
+            // if (x == c-1) {
+            //     break;
+            // }
+
+            // if (v[y][x])
+            //     continue;
 
             v[y][x] = true;
 
-            if (x - 1 >= 0 && !v[y][x-1]) {
-                q.push(Node({x-1, y}, g[y][x-1]));
-            }
-            if (x + 1 < r && !v[y][x+1]) {
-                q.push(Node({x+1, y}, g[y][x+1]));
-            }
-            if (y - 1 >= 0 && !v[y-1][x]) {
-                q.push(Node({x, y-1}, g[y-1][x]));
-            }
-            if (y + 1 < c && !v[y+1][x]) {
-                q.push(Node({x, y+1}, g[y+1][x]));
-            }
-        }
-        int maxel = *(max_element(sol.begin(), sol.end()));
-        // long long tot = accumulate(sol.begin(), sol.end(), 0LL);
-        for (auto e : sol) {
-            cout << e << " ";
-        }
-        cout << "\n\n";
-        if (maxel < deepest) {
-            deepest = maxel;
-            best = vector<int>(sol.begin(), sol.end());
-        }
-    }
+            Node to_add;
+            int b = INT_MAX;
 
-    for (auto e : best) {
-        cout << e << " ";
+            for (int k = 0; k < 4; ++k) {
+                int adjx = x + xs[k];
+                int adjy = y + ys[k];
+
+                if (adjx >=0 && adjx < c && adjy >= 0 && adjy < r && !v[adjy][adjx]) {
+                    if (max(g[adjy][adjx], cost) < d[adjy][adjx]) {
+                        d[adjy][adjx] = max(g[adjy][adjx], cost);
+                        Node node({adjx, adjy}, d[adjy][adjx]);
+                        q.push(node);
+                    }
+                }
+            }
+            // q.push(to_add);
+        }
+        deepest = min(g[i][0], deepest);
     }
-    cout << endl;
     cout << deepest << endl;
-    
 }
