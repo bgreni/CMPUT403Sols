@@ -1,5 +1,4 @@
-#include <iostream>
-#include <algorithm>
+#include <bits/stdc++.h>
 using namespace std;
 
 /*
@@ -12,7 +11,7 @@ using namespace std;
   and problem solving, but you are not permitted to hunt down solutions to
   these particular problems!
 
-https://en.cppreference.com/w/cpp/algorithm/binary_search
+  N/A
 
   List any classmate you discussed the problem with. Remember, you can only
   have high-level verbal discussions. No code should be shared, developed,
@@ -25,42 +24,83 @@ https://en.cppreference.com/w/cpp/algorithm/binary_search
   with the collaboration policy in CMPUT 403.
 */
 
-// FOR DEBUG
-void show(int arr[], int n) {
 
-    for (int i = 0; i < n; ++i) {
-        cout << arr[i];
-    }
-    cout << endl;
-}
+using p = pair<int, int>;
 
 int main() {
     ios::sync_with_stdio(false);
-    int len_seq, num_q;
-    cin >> len_seq;
-    int num[len_seq];
-    for (int i = 0; i < len_seq; ++i) {
-        cin >> num[i];
+    cin.tie(NULL);
+
+    int n, en;
+    cin >> n;
+    p arr[n+1];
+    int last = -1;
+    int lastind = 0;
+    int temp;
+    for (int i = 0; i < n; ++i) {
+        cin >> temp;
+        if (temp == last) {
+            arr[lastind].second += 1;
+        } else {
+            arr[lastind] = {temp, 1};
+            ++lastind;
+        }
     }
-    cin >> num_q;
+    arr[lastind+1] = {-1, 1};
 
-    int start, len;
-    for (int i = 0; i < num_q; ++i) {
-        cin >> start >> len;
-        int query[len];
-        for (int j = 0; j < len; ++j) {
-            cin >> query[j];
+    int start, m, t;
+    cin >> en;
+    unordered_set<int> s;
+
+    for (int i = 0; i < en; ++i) {
+        s.clear();
+        cin >> start >> m;
+        --start;
+
+        if (m == n) {
+            cout << n - start << endl;
+            for (int k = 0; k < m; ++k) {
+                cin >> start;
+            }
+            continue;
+        }
+        
+        s.reserve(m);
+        for (int k = 0; k < m; ++k) {
+            cin >> t;
+            s.insert(t);
         }
 
-        sort(query, query+len);
         int count = 0;
-        for (int k = (start - 1); k < len_seq; ++k) {
-            if (binary_search(query, query+len, num[k])) {
-                ++count;
-            } else break;
+        int j = 0;
+
+        while (start != 0) {
+            if (arr[j].second <= start) {
+                start -= arr[j].second;
+                ++j;
+            } else {
+                if (s.count(arr[j].first) > 0) {
+                    count += arr[j].second - start;
+                    ++j;
+                    break;
+                } else {
+                    goto nothing;
+                }
+            }
         }
+
+        for (; j <= lastind; ++j) {
+            
+            if (s.count(arr[j].first) > 0) {
+                count += arr[j].second;
+            } else {
+                break;
+            }
+
+        }
+        nothing:
+
+        
         cout << count << endl;
     }
-
-
 }

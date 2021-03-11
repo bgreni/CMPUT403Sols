@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 using namespace std;
-
 /*
   Brian Grenier
   1545276
@@ -24,37 +23,32 @@ using namespace std;
   with the collaboration policy in CMPUT 403.
 */
 
-unordered_set<int> seen;
-deque<int> window;
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(NULL);
-    int CASES, CASELEN, flake;
+    // map<int, int> pos;
 
-    cin >> CASES;
+    int n, temp;
+    cin >> n;
+    vector<int> pos(n);
 
-    for (int i = 0; i < CASES; ++i) {
-        cin >> CASELEN;
-        int longest = 0;
-        seen.clear();
-        window.clear();
-        for (int j = 0; j < CASELEN; ++j) {
-            cin >> flake;
-            if (seen.count(flake) > 0) {
-                while (window.front() != flake) {
-                    seen.erase(window.front());
-                    window.pop_front();
-                }
-                seen.erase(window.front());
-                window.pop_front();
-            }
+    for (int i = 0; i < n; ++i) {
+        cin >> pos[i];
+        pos[i]--;
+        // cin >> temp;
+        // pos[temp] = i;
 
-            seen.insert(flake);
-            window.push_back(flake);
-            longest = max(longest, (int)window.size());
-        }
-        cout << longest << endl;
     }
-   
+
+    for (int i = 0; i < n; ++i) {
+        // for (auto e : pos) {
+        //     cout << e << " ";
+        // }
+        // cout << endl;
+        cout << abs(pos[i] - i) << endl;
+        int v = pos[i];
+        pos.erase(pos.begin() + i);
+        pos.insert(pos.begin() + v, v);
+    }
 }
