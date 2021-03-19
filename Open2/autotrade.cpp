@@ -1,8 +1,15 @@
 #include <bits/stdc++.h>
 using namespace std;
+#define rep(i, a, b) for(int i = a; i < (b); ++i)
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+typedef long long ll;
+typedef pair<int, int> pii;
+typedef vector<int> vi;
 
 /*
-    COMPLETED
+
+COMPLETED
 
   Brian Grenier
   1545276
@@ -26,37 +33,27 @@ using namespace std;
   with the collaboration policy in CMPUT 403.
 */
 
-unordered_set<int> seen;
-deque<int> window;
-
+int mx = 100001;
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(NULL);
-    int CASES, CASELEN, flake;
-
-    cin >> CASES;
-
-    for (int i = 0; i < CASES; ++i) {
-        cin >> CASELEN;
-        int longest = 0;
-        seen.clear();
-        window.clear();
-        for (int j = 0; j < CASELEN; ++j) {
-            cin >> flake;
-            if (seen.count(flake) > 0) {
-                while (window.front() != flake) {
-                    seen.erase(window.front());
-                    window.pop_front();
-                }
-                seen.erase(window.front());
-                window.pop_front();
+    string s;
+    cin >> s;
+    
+    int M = s.size();
+    int n;
+    cin >> n;
+    int start1, start2;
+    for (int j = 0; j < n; ++j) {
+        cin >> start1 >> start2;
+        int prog = 0;
+        while (start1 + prog < M && start2 + prog < M) {
+            if (s[start1 + prog] == s[start2+prog]) {
+                ++prog;
+            } else {
+                break;
             }
-
-            seen.insert(flake);
-            window.push_back(flake);
-            longest = max(longest, (int)window.size());
         }
-        cout << longest << endl;
+        cout << prog << endl;
     }
-   
 }

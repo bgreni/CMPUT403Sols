@@ -18,6 +18,11 @@ using namespace std;
   these particular problems!
 
   https://github.com/UAPSPC/Code-Archive/blob/master/string/suffix_array.cpp
+  https://en.wikipedia.org/wiki/Burrows%E2%80%93Wheeler_transform
+
+  https://stackoverflow.com/questions/34639854/using-suffix-array-algorithm-for-burrows-wheeler-transform
+  ^ Because I spend hours trying to debug why my suffix array methods wasn't working
+  didn't look at the completed code that was linked, just took the idea of doubling the string
 
   List any classmate you discussed the problem with. Remember, you can only
   have high-level verbal discussions. No code should be shared, developed,
@@ -32,7 +37,6 @@ using namespace std;
 const int MaxN = 200010;
 int SA[MaxN], tempSA[MaxN];
 int RA[MaxN], tempRA[MaxN];
-// char T[MaxN];
 string T;
 int c[MaxN];
 int N;
@@ -90,8 +94,6 @@ int main() {
         N = T.size();
         T += T;
         N *= 2;
-        T[N] = '\0';
-        ++N;
         constructSA();
         for(int i = 0; i < N; i++) {
             if(SA[i] < N/2)

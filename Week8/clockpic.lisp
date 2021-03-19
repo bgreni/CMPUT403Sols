@@ -29,9 +29,7 @@
     (abs (mod (+ (- a1 a2) 180000) (- 360000 180000)))
 )
 
-
 (let* ((N (read)) (c1 (make-array N)) (c2 (make-array N)))
-
     (dotimes (i N)
         (setf (aref c1 i) (read))
     )
