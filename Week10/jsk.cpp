@@ -12,6 +12,7 @@ using namespace std;
   these particular problems!
 
     https://en.wikipedia.org/wiki/Fenwick_tree
+    https://cp-algorithms.com/data_structures/fenwick.html
 
   List any classmate you discussed the problem with. Remember, you can only
   have high-level verbal discussions. No code should be shared, developed,
@@ -29,40 +30,40 @@ int n, t[4*MAXN], Q;
 int gemsvs[MAXN];
 int V[6];
 
-void build(int a[], int v, int tl, int tr) {
-    if (tl == tr) {
-        t[v] = a[tl];
-    } else {
-        int tm = (tl + tr) / 2;
-        build(a, v*2, tl, tm);
-        build(a, v*2+1, tm+1, tr);
-        t[v] = t[v*2] + t[v*2+1];
+struct FTree {
+    int n;
+    vector<int> arr;
+    FTree(int en) : n(en) {
+        arr.resize(en+1);
     }
-}
 
-int sum(int v, int tl, int tr, int l, int r) {
-    if (l > r) 
-        return 0;
-    if (l == tl && r == tr) {
-        return t[v];
+    void add(int pos, int val) {
+        while (pos <= n) {
+            arr[pos] += val;
+            pos += (pos & (-pos));
+        }
     }
-    int tm = (tl + tr) / 2;
-    return sum(v*2, tl, tm, l, min(r, tm))
-           + sum(v*2+1, tm+1, tr, max(l, tm+1), r);
-}
 
-void update(int v, int tl, int tr, int pos, int new_val) {
-    if (tl == tr) {
-        t[v] = new_val;
-    } else {
-        int tm = (tl + tr) / 2;
-        if (pos <= tm)
-            update(v*2, tl, tm, pos, new_val);
-        else
-            update(v*2+1, tm+1, tr, pos, new_val);
-        t[v] = t[v*2] + t[v*2+1];
+    long long csum(int end) {
+        long long res = 0;
+        while (end > 0) {
+            res += arr[end];
+            end -= (end & (-end));
+        }
+        return res;
     }
-}
+
+    long long rsum(int start, int end) {
+        long long rhs = 0;
+        if (start != 1)
+            rhs = csum(start-1);
+        return csum(end) - rhs;
+    }
+
+    void update(int pos, int val) {
+        add(pos, val - rsum(pos, pos));
+    }
+};
 
 int main() {
     cin >> n >> Q;
@@ -70,15 +71,17 @@ int main() {
         cin >> V[i];
     }
 
+
+    vector<FTree> trees(6, FTree(n));
+
     char a;
-    int L[n];
     for (int i = 0; i < n; ++i) {
         cin >> a;
         int m = (int)(a - '0') - 1;
         gemsvs[i] = m;
-        L[i] = V[m];
+        trees[m].add(i+1, 1);
     }   
-    build(L, 1, 0, n-1);
+
 
     int b, c, d;
     for (int i = 0; i < Q; ++i) {
@@ -86,16 +89,17 @@ int main() {
         --c;
         if (b == 1) {
             --d;
-            update(1, 0, n-1, c, d);
+            trees[d].update(c+1, 1);
+            trees[gemsvs[c]].update(c+1, 0);
             gemsvs[c] = d;
         } else if (b == 2) {
-            for (int j = 0; j < n; ++j) {
-                if (gemsvs[j] == c) update(1,0,n-1,j,d);
-            }
             V[c] = d;
         } else {
-            --d;
-            cout << sum(1, 0, n-1, c, d) << endl;
+            long long s = 0;
+            for (int j = 0; j < 6; ++j) {
+                s += V[j] * trees[j].rsum(c+1, d);
+            }
+            cout << s << endl;
         }
         
     }
