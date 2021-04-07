@@ -11,7 +11,7 @@ using namespace std;
   and problem solving, but you are not permitted to hunt down solutions to
   these particular problems!
 
-    https://github.com/UAPSPC/Code-Archive/blob/master/graph/lca.cpp
+    https://eclass.srv.ualberta.ca/pluginfile.php/7035320/mod_resource/content/3/tourists.cpp
 
   List any classmate you discussed the problem with. Remember, you can only
   have high-level verbal discussions. No code should be shared, developed,
@@ -23,86 +23,84 @@ using namespace std;
   By submitting this code, you are agreeing that you have solved in accordance
   with the collaboration policy in CMPUT 403.
 */
-constexpr int log2(int n) {
-    int c = 0;
-    while(n >>= 1) c++;
-    return c;
-}
 
-#define MAXN 200100 // TODO: Max node count
-int n; // TODO: Node count
-int P[MAXN][log2(MAXN)+1]; // TODO: Parents. P[i][0] = parent of i, P[0][0] = -2
+int n, Q, u, v;
+
+typedef long long ll;
+#define MAXN 200010
+#define LOGN 18
+// the graph
+vector<int> g[MAXN];
+int up[LOGN][MAXN], depth[MAXN];
 
 // Find the vertex that is 2^i steps above u
-int parent(int u, int i) {
-    int &v = P[u][i];
-    if (v != -1) return v;
-    if (!i) return P[u][0];
-    if (parent(u,i-1) == -2) return v = -2;
-    return v = parent(parent(u,i-1),i-1);
+void dfs(int v, int pre, int d) {
+    depth[v] = d;
+
+    for (auto w : g[v])
+        if (w != pre)
+            dfs(w, v, d+1);
+
+    up[0][v] = pre;
 }
 
-// Depth of node u
-int D[MAXN];
-int depth(int u) {
-    if (D[u] != -1) return D[u];
-    return u ? D[u] = 1+depth(P[u][0]) : 0;
-}
+// compute the LCA of a and b
+int lca(int a, int b) {
+    if (depth[a] > depth[b]) swap(a, b);
 
-// Least common ancestor. O(log n)
-int lca(int u, int v) {
-    if (depth(v) > depth(u)) return lca(v,u);
-    for (int i = log2(n); i >= 0; i--)
-        if ((depth(u) - (1<<i)) >= depth(v)) u = parent(u,i);
-    // invariant: depth(u) == depth(v)
-    assert(depth(u) == depth(v));
-    if (u == v) return u;
-    for (int i = log2(n)-1; i >= 0; i--)
-        if (parent(u,i) != parent(v,i)) {
-            u = parent(u,i);
-            v = parent(v,i);
+    // raise b to have the same depth as a by jumping up via
+    // powers of 2 (sort of like the fast exponentiation trick)
+    for (int j = LOGN-1; j >= 0; --j)
+        if (depth[a] + (1<<j) <= depth[b])
+            b = up[j][b];
+
+    // then a was an ancestor of b, so it is the LCA
+    if (a == b) return a;
+
+    // otherwise, simultaneously raise them both up via the powers of
+    // 2 trick but only if this does not cause them to be equal
+    for (int j = LOGN-1; j >= 0; --j)
+        if (up[j][a] != up[j][b]) {
+            a = up[j][a];
+            b = up[j][b];
         }
-    // invariant: p(u,0) == p(v,0)
-    assert(parent(u,0) == parent(v,0));
-    return parent(u,0);
+
+    // now a != b but they have a common parent, which is the LCA
+    return up[0][a];
 }
 
-// Distance between u and v.
-// Includes both endpoint nodes.
-int dist(int u, int v) {
-    int a = lca(u,v);
-    return depth(u) + depth(v) - 2*depth(a) + 1;
+// just the forumula from the file header
+ll dist(ll a, ll b) {
+    return depth[a] + depth[b] - 2*depth[lca(a, b)] + 1;
 }
 
-int Q, u, v;
+
 
 int main() {
-    memset(D,-1,sizeof D);
-    memset(P,-1,sizeof P);
     cin >> n >> Q;
-
-    P[0][0] = -2;
 
     for (int i = 0; i < n-1; ++i) {
         cin >> u >> v;
-        P[v][0] = u;
+        --u;
+        --v;
+        g[u].push_back(v);
+        g[v].push_back(u);
     }
+
+    for (auto x : up) fill(x, x+n, -1);
+    dfs(0, -1, 0);
+
+     for (int j = 1; j < LOGN; ++j)
+        for (int v = 0; v < n; ++v)
+            if (up[j-1][v] != -1)
+                up[j][v] = up[j-1][up[j-1][v]];
 
     for (int i = 0; i < Q; ++i) {
         cin >> u >> v;
-
-        // int oldpu = P[u][0];
-        // int oldpv = P[v][0];
-        // P[oldpu][0] = u; 
-        // P[oldpv][0] = v;
-        // P[u][0] = -1;
-        // P[v][0] = -1;
-
-        cout << lca(u,v) << endl;
-        cout << dist(u,v) << endl;
-        cout << lca(u,v) + dist(u,v) << endl << endl;
-
-        // P[u][0] = oldpu;
-        // P[v][0] = oldpv;
+        --u;
+        --v;
+        ll z = dist(u,v);
+        cout << ((z*(z-1))/2)+n << endl;
+        
     }
 }
